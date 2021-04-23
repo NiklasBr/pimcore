@@ -275,7 +275,6 @@ class Builder
      */
     protected function buildNextLevel($parentDocument, $isRoot = false, $pageCallback = null, $parents = [], $maxDepth = null)
     {
-        $this->currentLevel++;
         $pages = [];
         $childs = $this->getChildren($parentDocument);
         $parents[$parentDocument->getId()] = $parentDocument;
@@ -332,7 +331,8 @@ class Builder
 
                 $page->setClass($page->getClass() . $classes);
 
-                if ($child->hasChildren() && (!$maxDepth || $maxDepth >= $this->currentLevel)) {
+                if ($child->hasChildren() && (!$maxDepth || $maxDepth > $this->currentLevel+1)) {
+                    $this->currentLevel++;
                     $childPages = $this->buildNextLevel($child, false, $pageCallback, $parents, $maxDepth);
                     $page->setPages($childPages);
                 }
